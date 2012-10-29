@@ -36,6 +36,23 @@ module Picasa
         Presenter::Album.new(response.parsed_response["feed"])
       end
 
+      # Returns user's photo list
+      #
+      # @param [Hash] options additional options included in request
+      # @option options [all, private, public, visible] :access which data should be retrieved when authenticated
+      # @option options [String] :fields which fields should be retrieved https://developers.google.com/gdata/docs/2.0/reference#PartialResponseRequest
+      # @option options [String, Integer] :max_results how many albums response should include
+      # @option options [String, Integer] :start_index 1-based index of the first result to be retrieved
+      #
+      # @return [Presenter::AlbumList]
+      def photo_list(options = {})
+        options['kind'] = 'photo'
+        path = "/data/feed/api/user/#{user_id}"
+        response = Connection.new.get(:path => path, :query => options, :headers => auth_header)
+
+        Presenter::Album.new(response.parsed_response["feed"])
+      end
+
       # Creates album
       #
       # @param [Hash] params album parameters
